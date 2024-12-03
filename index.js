@@ -38,12 +38,27 @@ app.delete("/tasks/:id", async (req, res) => {
         const taskToDeleted = await TaskModel.findById(taskId);
 
         if (!taskToDeleted) {
-            return res.status(500).send("Tarefa não encontrada");
+            return res.status(404).send("Tarefa não encontrada");
         }
 
         const deletedTask = await TaskModel.findByIdAndDelete(taskId);
 
         res.status(200).send(deletedTask);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+app.get("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const tasks = await TaskModel.findById(taskId);
+
+        if (!tasks) {
+            return res.status(404).send("Essa tarefa não foi encontrada");
+        }
+
+        res.status(200).send(tasks);
     } catch (err) {
         res.status(500).send(err.message);
     }
